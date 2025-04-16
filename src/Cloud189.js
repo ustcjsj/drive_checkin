@@ -98,119 +98,71 @@ const folderPath = path.join(process.cwd(), ".token");
 ensureDirectoryExists(folderPath);
 
 const main = async () => {
-  let accounts;
+  let accounts = process.env.TYYS.trim().split(/[\n ]+/);
 
-  for (let p = 0; p < accounts_group.length; p++) {
-    accounts = accounts_group[p].trim().split(/[\n ]+/);
+  for (i = 1; i < accounts.length; i += 2) {
+    const [userName, password] = accounts.slice(i, i + 2);
 
-    let familyCapacitySize, familyCapacitySize2, firstUserName;
-    FAMILY_ID = accounts[0];
-
-    for (i = 1; i < accounts.length; i += 2) {
-      const [userName, password] = accounts.slice(i, i + 2);
-
-      userNameInfo = mask(userName, 3, 7);
-      let token = new FileTokenStore(`.token/${userName}.json`);
-      try {
-        await sleep(800);
-        cloudClient = new CloudClient({
-          username: userName,
-          password,
-          token: token,
-        });
-      } catch (e) {
-        console.error("操作失败:", e.message); // 只记录错误消息
-      }
-
-      cloudClientMap.set(userName, cloudClient);
-      try {
-        logger.log(`${(i - 1) / 2 + 1}.账户 ${userNameInfo} 开始执行`);
-
-        let {
-          cloudCapacityInfo: cloudCapacityInfo0,
-          familyCapacityInfo: familyCapacityInfo0,
-        } = await cloudClient.getUserSizeInfo();
-
-        const result = await doTask(cloudClient);
-        result.forEach((r) => logger.log(r));
-
-        let {
-          cloudCapacityInfo: cloudCapacityInfo2,
-          familyCapacityInfo: familyCapacityInfo2,
-        } = await cloudClient.getUserSizeInfo();
-
-        if (i == 1) {
-          firstUserName = userName;
-          familyCapacitySize = familyCapacityInfo0.totalSize;
-          familyCapacitySize2 = familyCapacitySize;
-        }
-
-        //重新获取主账号的空间信息
-        cloudClient = cloudClientMap.get(firstUserName);
-        const { familyCapacityInfo } = await cloudClient.getUserSizeInfo();
-
-        logger.log(
-          `${firstSpace}实际：个人容量+ ${
-            (cloudCapacityInfo2.totalSize - cloudCapacityInfo0.totalSize) /
-            1024 /
-            1024
-          }M, 家庭容量+ ${
-            (familyCapacityInfo.totalSize - familyCapacitySize2) / 1024 / 1024
-          }M`
-        );
-        logger.log(
-          `${firstSpace}个人总容量：${(
-            cloudCapacityInfo2.totalSize /
-            1024 /
-            1024 /
-            1024
-          ).toFixed(2)}G, 家庭总容量：${(
-            familyCapacityInfo2.totalSize /
-            1024 /
-            1024 /
-            1024
-          ).toFixed(2)}G`
-        );
-        familyCapacitySize2 = familyCapacityInfo.totalSize;
-      } catch (e) {
-        logger.error(e);
-        if (e.code === "ETIMEDOUT") throw e;
-      } finally {
-        logger.log("");
-      }
+    userNameInfo = mask(userName, 3, 7);
+    let token = new FileTokenStore(`.token/${userName}.json`);
+    try {
+      await sleep(100);
+      cloudClient = new CloudClient({
+        username: userName,
+        password,
+        token: token,
+      });
+    } catch (e) {
+      console.error("操作失败:", e.message); // 只记录错误消息
     }
-    userNameInfo = mask(firstUserName, 3, 7);
-    const capacityChange = familyCapacitySize2 - familyCapacitySize;
-    logger.log(
-      `主账号${userNameInfo} 家庭容量+ ${capacityChange / 1024 / 1024}M`
-    );
-    logger.log(
-      `使用号：${((accounts.length - 1) / 2).toFixed(0)}      号均：${(
-        capacityChange /
-        1024 /
-        1024 /
-        (accounts.length - 1 / 2).toFixed(0)
-      ).toFixed(2)}M`
-    );
-    cloudClient = cloudClientMap.get(firstUserName);
-    let {
-      cloudCapacityInfo: cloudCapacityInfo2,
-      familyCapacityInfo: familyCapacityInfo2,
-    } = await cloudClient.getUserSizeInfo();
-    logger.log(
-      `个人总容量：${(
-        cloudCapacityInfo2.totalSize /
-        1024 /
-        1024 /
-        1024
-      ).toFixed(2)}G, 家庭总容量：${(
-        familyCapacityInfo2.totalSize /
-        1024 /
-        1024 /
-        1024
-      ).toFixed(2)}G`
-    );
-    logger.log("");
+
+    cloudClientMap.set(userName, cloudClient);
+    try {
+      logger.log(`${(i - 1) / 2 + 1}.账户 ${userNameInfo} 开始执行`);
+
+      let {
+        cloudCapacityInfo: cloudCapacityInfo0,
+        familyCapacityInfo: familyCapacityInfo0,
+      } = await cloudClient.getUserSizeInfo();
+
+      const result = await doTask(cloudClient);
+      result.forEach((r) => logger.log(r));
+
+      let {
+        cloudCapacityInfo: cloudCapacityInfo2,
+        familyCapacityInfo: familyCapacityInfo2,
+      } = await cloudClient.getUserSizeInfo();
+
+      logger.log(
+        `${firstSpace}实际：个人容量+ ${
+          (cloudCapacityInfo2.totalSize - cloudCapacityInfo0.totalSize) /
+          1024 /
+          1024
+        }M, 家庭容量+ ${
+          (familyCapacityInfo2.totalSize - familyCapacityInfo0.totalSize) /
+          1024 /
+          1024
+        }M`
+      );
+      logger.log(
+        `${firstSpace}个人总容量：${(
+          cloudCapacityInfo2.totalSize /
+          1024 /
+          1024 /
+          1024
+        ).toFixed(2)}G, 家庭总容量：${(
+          familyCapacityInfo2.totalSize /
+          1024 /
+          1024 /
+          1024
+        ).toFixed(2)}G`
+      );
+    } catch (e) {
+      logger.error(e);
+      if (e.code === "ETIMEDOUT") throw e;
+    } finally {
+      logger.log("");
+    }
   }
 };
 

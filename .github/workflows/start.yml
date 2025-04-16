@@ -7,11 +7,7 @@ on:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        group: [group_1, group_2, group_3, group_4, group_5]
     runs-on: ubuntu-latest
-    environment: ${{ matrix.group }}
 
     steps:
       - name: 更改交换空间并link构建空间
@@ -27,7 +23,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .token
-          key: ${{ matrix.group }}-by_zhlhlf
+          key: sign-by_zhlhlf
 
       - name: 安装node.js环境
         uses: actions/setup-node@main

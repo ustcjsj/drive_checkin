@@ -7,13 +7,11 @@
 **路径**：`Settings` → `Secrets and variables` → `Actions` → `Repository secrets`
 需新建以下加密变量：
 
-| 变量名 🐈            | 说明 📌                                                                                                                                                   | 示例 🖼️                              |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| `TYYS`               | 家庭 ID 账号密码组，格式：`家庭云ID 账号1 密码1 账号2 密码2 -- 家庭云ID 账号1 密码1 账号2 密码2`                                                          | `FID u1 p1 u2 p2 -- FID u1 p1 u2 p2` |
-| `PRIVATE_THREADX`    | 个人云签到线程数（不填默认 10）                                                                                                                           | `15`                                 |
-| `FAMILY_THREADX`     | 家庭云签到线程数（不填默认 10）                                                                                                                           | `8`                                  |
-| `PRIVATE_ONLY_FIRST` | 个人云仅签主账号：`true`(是)/`false`(不签)（不填默认 false）                                                                                              | `true`                               |
-| `WX_PUSHER_UID`      | 推送 UID（微信扫码-我的-我的 UID）[二维码](https://wxpusher.zjiecode.com/api/qrcode/4Ix7noqD3L7DMBoSlvig3t4hqjFWzPkdHqAYsg8IzkPreW7d8uGUHi9LJO4EcyJg.jpg) | `UID_123`                            |
+
+| 变量名 🐈       | 说明 📌                                                                                                                                                   | 示例 🖼️      |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `TYYS`          | 账号密码组，格式：`账号1 密码1 账号2 密码2`                                                                                                            | `u1 p1 u2 p2 ` |
+| `WX_PUSHER_UID` | 推送 UID（微信扫码-我的-我的 UID）[二维码](https://wxpusher.zjiecode.com/api/qrcode/4Ix7noqD3L7DMBoSlvig3t4hqjFWzPkdHqAYsg8IzkPreW7d8uGUHi9LJO4EcyJg.jpg) | `UID_123`      |
 
 ---
 
@@ -47,9 +45,6 @@ export TYY_FAMILY_ID=""
 
 # 私有云签到线程数量 默认10
 export PRIVATE_THREADX=""
-
-# 每个家庭云签到线程数量 默认10
-export FAMILY_THREADX=""
 
 # 个人签到是否只签主账号 true(是)  false为否会签到所有号  默认false
 export PRIVATE_ONLY_FIRST=""
