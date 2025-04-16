@@ -21,24 +21,22 @@ const doTask = async (cloudClient) => {
   let signPromises1 = [];
   let getSpace = [`${firstSpace}签到个人云获得(M)`];
 
-  if (process.env.PRIVATE_ONLY_FIRST != "true" || i == 1) {
-    for (let m = 0; m < process.env.PRIVATE_THREADX; m++) {
-      signPromises1.push(
-        (async () => {
-          try {
-            const res1 = await cloudClient.userSign();
-            if (!res1.isSign && res1.netdiskBonus) {
-              getSpace.push(` ${res1.netdiskBonus}`);
-            }
-          } catch (e) {}
-        })()
-      );
-    }
-    //超时中断
-    await Promise.race([Promise.all(signPromises1), sleep(timeout)]);
-    if (getSpace.length == 1) getSpace.push(" 0");
-    result.push(getSpace.join(""));
+  for (let m = 0; m < process.env.PRIVATE_THREADX; m++) {
+    signPromises1.push(
+      (async () => {
+        try {
+          const res1 = await cloudClient.userSign();
+          if (!res1.isSign && res1.netdiskBonus) {
+            getSpace.push(` ${res1.netdiskBonus}`);
+          }
+        } catch (e) {}
+      })()
+    );
   }
+  //超时中断
+  await Promise.race([Promise.all(signPromises1), sleep(timeout)]);
+  if (getSpace.length == 1) getSpace.push(" 0");
+  result.push(getSpace.join(""));
 
   signPromises1 = [];
   getSpace = [`${firstSpace}获得(M)`];
@@ -75,7 +73,6 @@ if (process.env.TYYS == null || process.env.TYYS == "") {
   process.exit(0);
 }
 
-let accounts_group = process.env.TYYS.trim().split("--");
 let FAMILY_ID;
 
 let i;
@@ -100,7 +97,7 @@ ensureDirectoryExists(folderPath);
 const main = async () => {
   let accounts = process.env.TYYS.trim().split(/[\n ]+/);
 
-  for (i = 1; i < accounts.length; i += 2) {
+  for (i = 0; i < accounts.length; i += 2) {
     const [userName, password] = accounts.slice(i, i + 2);
 
     userNameInfo = mask(userName, 3, 7);
