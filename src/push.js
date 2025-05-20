@@ -62,7 +62,6 @@ const pushWxPusher = (title, desp) => {
 };
 
 const push = (title, desp) => {
-  pushWxPusher(title, desp);
   pushTelegramBot(title, desp);
 };
 
