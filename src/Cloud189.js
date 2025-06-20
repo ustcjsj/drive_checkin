@@ -42,7 +42,7 @@ const doTask = async (cloudClient) => {
   getSpace = [`${firstSpace}获得(M)`];
   const { familyInfoResp } = await cloudClient.getFamilyList();
   if (familyInfoResp) {
-    const family = familyInfoResp.find((f) => f.familyId == FAMILY_ID);
+    const family = familyInfoResp.find((f) => f.userRole == 1);
     if (!family) return result;
     result.push(`${firstSpace}开始签到家庭云 ID: ${family.familyId}`);
     for (let i = 0; i < 1; i++) {
@@ -165,6 +165,7 @@ const main = async () => {
 
 (async () => {
   try {
+    if(process.env.PRIVATE_THREADX == null) process.env.PRIVATE_THREADX = 15
     await main();
   } finally {
     logger.log("\n\n");
