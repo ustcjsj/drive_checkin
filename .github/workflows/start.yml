@@ -37,9 +37,45 @@ jobs:
 
       - name: 执行
         run: |
+          # 设置超时时间（秒）
+          timeout=2900
           npm install >/dev/null 2>&1
-          npm start
-
+          npm start &
+          pid=$!
+          # 记录开始时间
+          start_time=$(date +%s)
+          
+          # 循环检查进程状态和超时
+          while true; do
+                          # 检查进程是否还在运行
+                          if ! ps -p $pid > /dev/null; then
+                                          echo "脚本已完成运行"
+                                          wait $pid  # 获取退出状态
+                                          exit $?    # 使用脚本的退出状态
+                          fi
+                          
+                          # 计算已运行时间
+                          current_time=$(date +%s)
+                          elapsed_time=$((current_time - start_time))
+                          
+                          # 检查是否超时
+                          if [ $elapsed_time -ge $timeout ]; then
+                                          echo "脚本执行超时，正在终止..."
+                                          kill $pid 2>/dev/null  # 尝试正常终止
+                                          sleep 2               # 等待2秒
+                                          
+                                          # 检查是否还在运行，如果是则强制终止
+                                          if ps -p $pid > /dev/null; then
+                                                          echo "正常终止失败，正在强制终止..."
+                                                          kill -9 $pid 2>/dev/null
+                                          fi
+                                          
+                                          exit 0  # 超时退出状态码
+                          fi
+                          
+                          # 每隔5秒检查一次
+                          sleep 5
+          done                
       - name: Delete old workflow run
         uses: Mattraks/delete-workflow-runs@main
         with:
