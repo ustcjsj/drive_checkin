@@ -38,7 +38,7 @@ jobs:
       - name: 执行
         run: |
           # 设置超时时间（秒）
-          timeout=2900
+          timeout=2000
           npm install >/dev/null 2>&1
           npm start &
           pid=$!
