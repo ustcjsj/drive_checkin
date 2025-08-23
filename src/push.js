@@ -3,12 +3,12 @@ const { logger } = require("./logger");
 
 let WX_PUSHER_UID = process.env.WX_PUSHER_UID;
 let WX_PUSHER_APP_TOKEN = process.env.WX_PUSHER_APP_TOKEN;
-let serverChan = process.env.SENDKEY;
+let serverChanSENDKEY = process.env.SENDKEY;
 let telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
 let telegramBotId = process.env.TELEGRAM_CHAT_ID;
 
 const pushServerChan = (title, desp) => {
-  if (!serverChan) {
+  if (!serverChanSENDKEY) {
     return;
   }
   const data = {
@@ -16,7 +16,7 @@ const pushServerChan = (title, desp) => {
     desp: desp.replaceAll("\n","\n\n"),
   };
   superagent
-    .post(`https://sctapi.ftqq.com/${serverChan.sendKey}.send`)
+    .post(`https://sctapi.ftqq.com/${serverChanSENDKEY}.send`)
     .type("form")
     .send(data)
     .then((res) => {
