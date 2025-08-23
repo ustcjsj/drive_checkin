@@ -1,11 +1,37 @@
 const superagent = require("superagent");
 const { logger } = require("./logger");
+const serverChan = require("./serverChan");
 
 let WX_PUSHER_UID = process.env.WX_PUSHER_UID;
 let WX_PUSHER_APP_TOKEN = process.env.WX_PUSHER_APP_TOKEN;
 
 let telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
 let telegramBotId = process.env.TELEGRAM_CHAT_ID;
+
+const pushServerChan = (title, desp) => {
+  if (!serverChan.sendKey) {
+    return;
+  }
+  const data = {
+    title,
+    desp: desp.replaceAll("\n","\n\n"),
+  };
+  superagent
+    .post(`https://sctapi.ftqq.com/${serverChan.sendKey}.send`)
+    .type("form")
+    .send(data)
+    .then((res) => {
+      logger.info("ServerChan推送成功");
+    })
+    .catch((err) => {
+      if (err.response?.text) {
+        const { info } = JSON.parse(err.response.text);
+        logger.error(`ServerChan推送失败:${info}`);
+      } else {
+        logger.error(`ServerChan推送失败:${JSON.stringify(err)}`);
+      }
+    });
+};
 
 const pushTelegramBot = (title, desp) => {
   if (!(telegramBotToken && telegramBotId)) {
