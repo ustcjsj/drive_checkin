@@ -1,15 +1,14 @@
 const superagent = require("superagent");
 const { logger } = require("./logger");
-const serverChan = require("./serverChan");
 
 let WX_PUSHER_UID = process.env.WX_PUSHER_UID;
 let WX_PUSHER_APP_TOKEN = process.env.WX_PUSHER_APP_TOKEN;
-
+let serverChan = process.env.SENDKEY;
 let telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
 let telegramBotId = process.env.TELEGRAM_CHAT_ID;
 
 const pushServerChan = (title, desp) => {
-  if (!serverChan.sendKey) {
+  if (!serverChan) {
     return;
   }
   const data = {
