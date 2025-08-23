@@ -12,6 +12,8 @@
 | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
 | `TYYS`          | 账号密码组，格式：`账号1 密码1 账号2 密码2`                                                                                                            | `u1 p1 u2 p2 ` |
 | `WX_PUSHER_UID` | 推送 UID（微信扫码-我的-我的 UID）[二维码](https://wxpusher.zjiecode.com/api/qrcode/4Ix7noqD3L7DMBoSlvig3t4hqjFWzPkdHqAYsg8IzkPreW7d8uGUHi9LJO4EcyJg.jpg) | `UID_123`      |
+| `SENDKEY`          | server酱的SendKey                                                                                                           | `SCT****************** ` |
+| `WX_PUSHER_APP_TOKEN`          | wxpusher app token                                                                                                       | `自行申请 ` |
 
 ---
 
