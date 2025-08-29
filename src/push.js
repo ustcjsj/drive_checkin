@@ -87,8 +87,8 @@ const pushWxPusher = (title, desp) => {
 };
 
 const push = (title, desp) => {
-  pushTelegramBot(title, desp);
-  pushServerChan(title, desp);
+  // pushTelegramBot(title, desp);
+  // pushServerChan(title, desp);
   pushWxPusher(title, desp);
 };
 
