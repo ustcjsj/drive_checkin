@@ -6,6 +6,38 @@ let WX_PUSHER_APP_TOKEN = process.env.WX_PUSHER_APP_TOKEN;
 let serverChanSENDKEY = process.env.SENDKEY;
 let telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
 let telegramBotId = process.env.TELEGRAM_CHAT_ID;
+let feishuBotKey = process.env.FSKEY;
+
+const pushFeishuBot = (title, desp) => {
+  if (!feishuBotKey) {
+    return;
+  }
+  logger.info("飞书 服务启动");
+
+  const data = {
+    msg_type: "text",
+    content: {
+      text: `${title}\n\n${desp}`,
+    },
+  };
+
+  superagent
+    .post(`https://open.feishu.cn/open-apis/bot/v2/hook/${feishuBotKey}`)
+    .send(data) // superagent 默认会把对象转为 JSON 并设置 Content-Type 为 application/json
+    .timeout(3000)
+    .then((res) => {
+      // 飞书接口成功时会返回 code: 0 或 StatusCode: 0
+      const body = res.body || {};
+      if (body.StatusCode === 0 || body.code === 0) {
+        logger.info("飞书 推送成功！");
+      } else {
+        logger.error(`飞书 推送失败！错误信息如下：:${JSON.stringify(body)}`);
+      }
+    })
+    .catch((err) => {
+      logger.error(`飞书 推送异常:${err}`);
+    });
+};
 
 const pushServerChan = (title, desp) => {
   if (!serverChanSENDKEY) {
@@ -90,6 +122,7 @@ const push = (title, desp) => {
   // pushTelegramBot(title, desp);
   // pushServerChan(title, desp);
   pushWxPusher(title, desp);
+  pushFeishuBot(title, desp); 
 };
 
 exports.push = push;
